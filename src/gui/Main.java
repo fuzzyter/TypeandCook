@@ -28,7 +28,7 @@ public class Main {
                 {"타코야끼","반죽","문어","콘옥수수","소스","가쓰오부시"}};
         String words[][]={
                 {"particular","특정한"}, {"investigate","조사하다"},{"magnify","확대하다"},{"conclusive","결정적인"},{"conversely","반대로"},
-                {"assure","보장하다"},{"entire","전체의"},{"deliberate","의도적인"},{"conjunction","결합"},
+                {"assure","보장하다"},{"entire","전체의"},{"deliberate","의도적인"},{"conjunction","결합"},{"sleek","매끄러운"},
                 {"afford","제공하다"},{"justified","정당한"},{"subdue","정복하다"},{"extant","현존하는"},{"invoke","빌다"}};
         int c=random.nextInt(customers.length);
         int f=random.nextInt(foods.length);
@@ -48,18 +48,17 @@ public class Main {
             System.out.println(foods[f][i]);
 
         int i=0;
-        String input=null;
         Scanner scanner = new Scanner(System.in);
-        while(i < 5) {
+        while(i < foods[f].length-1) {
             System.out.println(foods[f][i + 1] + "을 재료로 넣자!");
             System.out.println(words[f * 5 + i][0] + words[f * 5 + i][1]);
-            input = scanner.next();
+            String input = scanner.next();
             if (input.equals(words[f * 5 + i][1])) {
                 System.out.println("맞음");
                 i++;
             } else
                 System.out.println("틀림");
         }
-        System.out.println("저는 이 채소의 익힘정도를 굉장히 중요시 여기거덩여\n이 "+foods[f][0]+"은 이븐하게 만들어졌네요. 합격입니다");
+        System.out.println("\n저는 이 채소의 익힘정도를 굉장히 중요시 여기거덩여\n이 "+foods[f][0]+"은 이븐하게 만들어졌네요. 합격입니다");
     }
 }
