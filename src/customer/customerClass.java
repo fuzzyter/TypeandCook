@@ -1,5 +1,5 @@
 package customer;
-
+/*
 public class CustomerClass {
 
     private String name;
@@ -32,3 +32,5 @@ public class CustomerClass {
 
 
 }
+
+ */
