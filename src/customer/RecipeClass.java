@@ -17,7 +17,7 @@ public abstract class RecipeClass {
     public String[] getIngredientWords() { // 레시피의 재료당 랜덤 단어 배치하여 배열로 반환
 
         String[] randomWords = {
-                "말", "획득하다", "싸우다", "찾다", "기다리다", "기억하다",
+                "말", "획득하다", "싸우다 ", "찾다", "기다리다", "기억하다",
                 "지다", "달리다", "떠나다", "꿈", "이상"
         };
 
@@ -55,5 +55,3 @@ public class TakoyakiRecipe extends RecipeClass {
         this.ingredients = new String[]{"반죽", "문어", "콘옥수수", "소스", "가쓰오부시"};
     }
 }
-
-// 다른 레시피도 마찬가지로 작성
