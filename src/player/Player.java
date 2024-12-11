@@ -3,6 +3,7 @@ package player;
 import java.util.Scanner;
 import java.util.Random;
 import javax.swing.*;
+import java.awt.event.*;
 import java.awt.*;
 
 public class Player extends JFrame {
@@ -21,6 +22,18 @@ public class Player extends JFrame {
 
     }
 
+    class MyKeyListener extends KeyAdapter {
+        public void keyPressed(KeyEvent e) {
+            int keyCode = e.getKeyCode();
+
+            switch(keyCode) {
+                case KeyEvent.VK_TAB:
+                    
+            }
+
+        }
+    }
+
     public static void main(String[] args) {
         Random random = new Random();
         random.setSeed(System.currentTimeMillis());
@@ -36,7 +49,7 @@ public class Player extends JFrame {
         System.out.println(customers[c]+"님이 "+foods[f][0]+"(을)를 주문했습니다!\n START!\n");
 
 
-        System.out.println("<"+foods[f][0]+" 재료 및 레시피>------------");
+        System.out.println("------<"+foods[f][0]+" 재료 및 레시피>------");
         for(int i=1; i<foods[f].length; i++)
             System.out.println(foods[f][i]);
         System.out.println("---------------------------");
@@ -45,7 +58,7 @@ public class Player extends JFrame {
         Scanner scanner = new Scanner(System.in);
         while(i < foods[f].length-1) {
             System.out.println(foods[f][i + 1] + "을 재료로 넣자!");
-            System.out.println(words[f * 5 + i][1] + words[f * 5 + i][0]);
+            System.out.println(words[f * 5 + i][1]);
             String input = scanner.next();
 
             boolean tf=input.equals(words[f * 5 + i][0]);
