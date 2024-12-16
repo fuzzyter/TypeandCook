@@ -3,6 +3,8 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import customer.Customer;
 import customer.CustomerGenerator;
@@ -73,7 +75,7 @@ public class StartGUI extends JFrame {
         JButton howToPlayButton = new JButton("How to Play");
         howToPlayButton.setFont(new Font("Arial", Font.BOLD, 20));
         howToPlayButton.setPreferredSize(new Dimension(150, 40));
-        //howToPlayButton.addActionListener(e -> showHowToPlay());
+        howToPlayButton.addActionListener(e -> showHowToPlay());
         mainPanel.add(howToPlayButton, gbc);
 
         gbc.gridy = 3;
@@ -88,7 +90,52 @@ public class StartGUI extends JFrame {
         mainPanel.add(new JLabel(), gbc);
 
         add(mainPanel);
+        // ESC 키 이벤트 리스너 추가
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    hideHelpImage();  // ESC 눌렀을 때 이미지 숨기기
+                }
+            }
+        });
+        this.setFocusable(true);  // 키 이벤트를 받기 위해 JFrame에 포커스를 주어야 함
     }
+
+    //HowtoPlay버튼을 눌렀을 때
+    private void showHowToPlay() {
+        // 기존에 이미지를 띄운 패널이 있다면 새로 띄우지 않도록 제거
+        hideHelpImage();
+
+        // Help 이미지를 표시할 새로운 JLabel 생성
+        JLabel helpImageLabel = new JLabel();
+        ImageIcon helpImage = new ImageIcon("src/assets/help.png");
+        helpImageLabel.setIcon(helpImage);
+
+        // Help 이미지를 화면에 표시
+        //helpImageLabel.setBounds(0, 0, getWidth(), getHeight());  // 화면 크기 전체에 표시
+        add(helpImageLabel);
+
+        // 이미지를 닫는 동작을 위해 저장
+        setHelpImageLabel(helpImageLabel);
+        revalidate();
+        repaint();
+    }
+
+    // "Help" 이미지를 숨기기
+    private JLabel helpImageLabel = null;
+
+    private void setHelpImageLabel(JLabel label) {
+        this.helpImageLabel = label;
+    }
+
+    private void hideHelpImage() {
+        if (helpImageLabel != null) {
+            remove(helpImageLabel);  // 화면에서 이미지 제거
+            helpImageLabel = null;
+            revalidate();
+            repaint();
+        }}
 
     private void startGame(ActionEvent e) {
         getContentPane().removeAll(); // 기존 내용 제거
