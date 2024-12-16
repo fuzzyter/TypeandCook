@@ -1,53 +1,38 @@
 package customer;
 
-import java.util.Random;
-
-import java.util.Arrays;
+import java.util.Set;
 
 
 public abstract class RecipeClass {
     protected String name;
-    protected String[] ingredients;
+    protected Set<String> ingredients;
 
     public String getName() {
         return name;
     }
 
-    public String[] getIngredients() {
+    public Set<String> getIngredients() {
         return ingredients;
     }
+}
 
-    public String[] getIngredientWords() {
-        Random random = new Random();
-        String[] result = new String[ingredients.length];
-        for (int i = 0; i < ingredients.length; i++) {
-            result[i] = "Word" + random.nextInt(100);
-        }
-        return result;
-    }
-
-    public boolean matchesIngredient(String input) {
-        return Arrays.asList(ingredients).contains(input);
+class Recipe1 extends RecipeClass {
+    public Recipe1() {
+        name = "불고기버거";
+        ingredients = Set.of("빵", "양상추", "치즈", "패티", "양념소스");
     }
 }
 
-class HamburgerRecipe extends RecipeClass {
-    public HamburgerRecipe() {
-        name = "햄버거";
-        ingredients = new String[]{"참깨빵", "고기 패티", "특별한 소스", "양상추", "양파"};
+class Recipe2 extends RecipeClass {
+    public Recipe2() {
+        name = "치킨버거";
+        ingredients = Set.of("빵", "양상추", "치즈", "치킨", "머스타드");
     }
 }
 
-class RamenRecipe extends RecipeClass {
-    public RamenRecipe() {
-        name = "라면";
-        ingredients = new String[]{"뜨거운 물", "소스", "면", "계란", "김치"};
-    }
-}
-
-class TakoyakiRecipe extends RecipeClass {
-    public TakoyakiRecipe() {
-        name = "타코야끼";
-        ingredients = new String[]{"반죽", "문어", "콘옥수수", "소스", "가쓰오부시"};
+class Recipe3 extends RecipeClass {
+    public Recipe3() {
+        name = "새우버거";
+        ingredients = Set.of("빵", "양상추", "새우", "토마토", "머스타드");
     }
 }
