@@ -1,9 +1,8 @@
 package gui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import gui.GameGUI;
-import gui.EndingGUI;
 
 public class StartGUI extends JFrame {
 
@@ -15,7 +14,6 @@ public class StartGUI extends JFrame {
         setLocationRelativeTo(null);
 
         initComponents();
-
         setVisible(true);
     }
 
@@ -29,13 +27,11 @@ public class StartGUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // "시작하기" 버튼
         JButton startButton = new JButton("Start");
         startButton.setFont(new Font("Arial", Font.BOLD, 20));
         startButton.addActionListener(this::startGame);
         mainPanel.add(startButton, gbc);
 
-        // "나가기" 버튼
         gbc.gridy++;
         JButton exitButton = new JButton("Exit");
         exitButton.setFont(new Font("Arial", Font.BOLD, 20));
@@ -46,14 +42,17 @@ public class StartGUI extends JFrame {
     }
 
     private void startGame(ActionEvent e) {
-        getContentPane().removeAll(); // 기존 내용 제거
-        GameGUI gamePanel = new GameGUI(this); // GameGUI 생성
-        add(gamePanel); // 새로운 JPanel 추가
-        revalidate(); // 레이아웃 갱신
-        repaint(); // 화면 갱신
+        dispose(); // 현재 창 종료
+        JFrame gameFrame = new JFrame();
+        gameFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        gameFrame.setSize(1280, 720);
+        gameFrame.setResizable(false);
+        gameFrame.setLocationRelativeTo(null);
+        gameFrame.setContentPane(new GameGUI(gameFrame));
+        gameFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new StartGUI());
+        SwingUtilities.invokeLater(StartGUI::new);
     }
 }
