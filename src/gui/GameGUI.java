@@ -90,16 +90,20 @@ public class GameGUI extends JPanel {
     }
 
     private void initComponents() {
-        setBackground(Color.DARK_GRAY);
         BGImage = new ImageIcon("src/assets/background.png"); //배경 이미지 출력
 
         JPanel background = new JPanel() {
             public void paintComponent(Graphics g) {
-                g.drawImage(BGImage.getImage(), 0, 0, null);
+                g.drawImage(BGImage.getImage(), 0, 0, this);
                 setOpaque(false); //그림을 표시하게 설정,투명하게 조절
                 super.paintComponent(g);
             }
         };
+        background.setBounds(0, 0, 1280, 720); // 배경 크기 설정
+        background.setOpaque(true); // 배경을 불투명하게 설정 (이미지 표시 위해)
+
+        setLayout(null); // 배치 관리자 제거
+        add(background, Integer.valueOf(0)); // background를 다른 컴포넌트들보다 뒤에 추가
 
         // 점수 표시
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 24));
