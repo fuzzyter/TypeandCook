@@ -8,12 +8,30 @@ public class RandomWordMatch {
     private final List<String> words;
 
     public RandomWordMatch(List<String> ingredients, List<String> words) {
+        if (ingredients == null || words == null) {
+            throw new IllegalArgumentException("ingredients 또는 words 리스트가 null입니다.");
+        }
         this.ingredients = ingredients;
         this.words = words;
         this.wordLookup = new HashMap<>();
+
+        if (ingredients.size() == words.size()) {
+            for (int i = 0; i < ingredients.size(); i++) {
+                wordLookup.put(ingredients.get(i), words.get(i));
+            }
+        }
+        System.out.println("wordlookup: " + wordLookup);
     }
 
     public void shuffle() {
+        if (this.ingredients == null || this.words == null) {
+            throw new IllegalArgumentException("ingredients 또는 words 리스트가 null입니다.");
+        }
+
+        if (ingredients.size() > words.size()) {
+            throw new IllegalArgumentException("words 리스트가 ingredients 리스트보다 작을 수 없습니다.");
+        }
+
         List<String> wordListClone = new ArrayList<>(this.words);
         Collections.shuffle(wordListClone);
         for (int i = 0; i < this.ingredients.size(); i++) {
@@ -28,6 +46,9 @@ public class RandomWordMatch {
     }
 
     public Set<Map.Entry<String, String>> getPairs() {
+        if (wordLookup == null || wordLookup.isEmpty()) {
+            throw new IllegalStateException("wordLookup is null or empty!");
+        }
         return this.wordLookup.entrySet();
     }
 }

@@ -6,6 +6,7 @@ import customer.CustomerListManager;
 import customer.RecipeCheck;
 import player.Player;
 import player.RandomWordMatch;
+import player.WordManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,6 +22,8 @@ import java.util.HashSet;
 
 
 public class GameGUI extends JPanel {
+
+    private ImageIcon BGImage;
 
     private final JLabel scoreLabel = new JLabel("Score: 0");
     private final JLabel timerLabel = new JLabel("Time: 02:00");
@@ -41,24 +44,62 @@ public class GameGUI extends JPanel {
     private final RecipeCheck recipeCheck;
     private final Customer customer;
 
+
     private final JFrame parentFrame;
 
-    public GameGUI(JFrame parentFrame, CustomerListManager customerListManager, CustomerGenerator customerGenerator, RandomWordMatch randomWordMatch, RecipeCheck recipeCheck, Customer customer) {
+
+    private static final List<String> ingredients = List.of("빵", "양상추", "토마토", "양념소스", "치킨", "치즈", "패티", "새우", "머스타드");
+    private static final List<String> words = List.of("particular","investigate","magnify","conclusive","conversely","assure",
+            "entire","deliberate","conjunction","sleek","afford","justified","subdue","extant","invoke");
+
+
+
+    public GameGUI(JFrame parentFrame, CustomerListManager customerListManager, CustomerGenerator customerGenerator, RecipeCheck recipeCheck, Customer customer) {
+        System.out.println("GameGUI constructor start");
+
         this.parentFrame = parentFrame;
         setLayout(null);
         initComponents();
         startTimer(); // 제한 시간 타이머 시작
+
+/*
+        System.out.println("Before displayRandomWords");
+        if (randomWordMatch == null) {
+            System.out.println("randomWordMatch is null!");
+        } else {
+            System.out.println("randomWordMatch initialized!");
+        }*/
+
+        this.randomWordMatch = WordManager.getRandomWordMatch();
+
         displayRandomWords(); // 초기 단어 출력
+
+        System.out.println("After displayRandomWords");
 
         this.customerListManager = customerListManager;
         this.customerGenerator = customerGenerator;
-        this.randomWordMatch = randomWordMatch;
+        //this.randomWordMatch = new RandomWordMatch(ingredients, words);
+        //this.randomWordMatch = WordManager.getRandomWordMatch();
+
+
+        System.out.println(ingredients);
         this.recipeCheck = recipeCheck;
         this.customer = customer;
+
+
     }
 
     private void initComponents() {
         setBackground(Color.DARK_GRAY);
+        BGImage = new ImageIcon("src/assets/background.png"); //배경 이미지 출력
+
+        JPanel background = new JPanel() {
+            public void paintComponent(Graphics g) {
+                g.drawImage(BGImage.getImage(), 0, 0, null);
+                setOpaque(false); //그림을 표시하게 설정,투명하게 조절
+                super.paintComponent(g);
+            }
+        };
 
         // 점수 표시
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -163,13 +204,31 @@ public class GameGUI extends JPanel {
 
 //랜덤 단어 출력
     private void displayRandomWords() {
-        randomWordMatch.shuffle(); // Shuffle the words
+        /*
+        randomWordMatch.getPairs(); // Shuffle the words
         int index = 0;
         for (Map.Entry<String, String> entry : randomWordMatch.getPairs()) {
             if (index < wordLabels.length) {
                 wordLabels[index].setText(entry.getKey() + " - " + entry.getValue());
                 index++;
             }
+        }*/
+        if (this.randomWordMatch == null) {
+            System.out.println("randomWordMatch is null! Cannot display words.");
+        }
+        try {
+            randomWordMatch.getPairs(); // Shuffle the words
+            int index = 0;
+            System.out.println("Random words are being displayed...");
+            // 예를 들어, randomWordMatch.getPairs()가 사용된다면 그 전에 예외가 발생할 수 있음
+            for (Map.Entry<String, String> entry : randomWordMatch.getPairs()) {
+                if (index < wordLabels.length) {
+                    wordLabels[index].setText(entry.getKey() + " - " + entry.getValue());
+                    index++;
+                }}
+        } catch (Exception e) {
+            System.out.println("Error in displayRandomWords: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -198,6 +257,6 @@ public class GameGUI extends JPanel {
     private void endGame() {
         JOptionPane.showMessageDialog(parentFrame, "게임 종료! 점수: " + score);
         parentFrame.dispose();
-        new StartGUI(customerListManager, customerGenerator, randomWordMatch, recipeCheck, customer); // 메인 메뉴로 복귀
+        new StartGUI(customerListManager, customerGenerator, recipeCheck, customer); // 메인 메뉴로 복귀
     }
 }

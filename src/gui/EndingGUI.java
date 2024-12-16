@@ -35,7 +35,7 @@ public class EndingGUI extends JPanel {
         backToMenuButton.setFont(new Font("Arial", Font.BOLD, 20));
         backToMenuButton.addActionListener(e -> {
             parentFrame.getContentPane().removeAll(); // 현재 내용 제거
-            parentFrame.setContentPane(new StartGUI(customerListManager, customerGenerator, randomWordMatch, recipeCheck, customer).getContentPane()); // 메인 메뉴로 이동
+            parentFrame.setContentPane(new StartGUI(customerListManager, customerGenerator, recipeCheck, customer).getContentPane()); // 메인 메뉴로 이동
             parentFrame.revalidate();
             parentFrame.repaint();
         });

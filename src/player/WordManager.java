@@ -7,8 +7,15 @@ public class WordManager {
     private static final List<String> words = List.of("particular","investigate","magnify","conclusive","conversely","assure",
             "entire","deliberate","conjunction","sleek","afford","justified","subdue","extant","invoke");
 
-    public static void main(String[] args){
-        RandomWordMatch randomWordMatch = new RandomWordMatch(ingredients, words);
+    //private static final RandomWordMatch randomWordMatch = new RandomWordMatch(ingredients, words);
+    private static final RandomWordMatch randomWordMatch;
 
+    static {
+        randomWordMatch = new RandomWordMatch(ingredients, words);
+        randomWordMatch.shuffle(); // 초기화 시 한 번만 셔플
+    }
+
+    public static RandomWordMatch getRandomWordMatch() {
+        return randomWordMatch;
     }
 }

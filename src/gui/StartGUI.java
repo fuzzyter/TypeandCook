@@ -11,16 +11,17 @@ import customer.CustomerGenerator;
 import customer.CustomerListManager;
 import customer.RecipeCheck;
 import player.RandomWordMatch;
+import player.WordManager;
 
 public class StartGUI extends JFrame {
     private final CustomerListManager customerListManager;
     private final CustomerGenerator customerGenerator;
-    private final RandomWordMatch randomWordMatch;
+    //private final RandomWordMatch randomWordMatch;
     private final RecipeCheck recipeCheck;
     private final Customer customer;
     private ImageIcon backgroundImage;
 
-    public StartGUI(CustomerListManager customerListManager, CustomerGenerator customerGenerator, RandomWordMatch randomWordMatch, RecipeCheck recipeCheck, Customer customer) {
+    public StartGUI(CustomerListManager customerListManager, CustomerGenerator customerGenerator, RecipeCheck recipeCheck, Customer customer) {
         setTitle("Type&Cook");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1280, 720);
@@ -29,7 +30,7 @@ public class StartGUI extends JFrame {
 
         this.customerListManager = customerListManager;
         this.customerGenerator = customerGenerator;
-        this.randomWordMatch = randomWordMatch;
+        //this.randomWordMatch = WordManager.getRandomWordMatch();
         this.recipeCheck = recipeCheck;
         this.customer = customer;
 
@@ -140,7 +141,7 @@ public class StartGUI extends JFrame {
     private void startGame(ActionEvent e) {
         getContentPane().removeAll(); // 기존 내용 제거
 
-        GameGUI gamePanel = new GameGUI(this, customerListManager, customerGenerator, randomWordMatch, recipeCheck, customer); // GameGUI 생성
+        GameGUI gamePanel = new GameGUI(this, customerListManager, customerGenerator, recipeCheck, customer); // GameGUI 생성
         add(gamePanel); // 새로운 JPanel 추가
         revalidate(); // 레이아웃 갱신
         repaint(); // 화면 갱신
