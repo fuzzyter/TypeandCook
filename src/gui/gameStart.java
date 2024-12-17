@@ -1,20 +1,26 @@
 package gui;
 
-import customer.Customer;
-import customer.CustomerGenerator;
-import customer.CustomerListManager;
-import customer.RecipeCheck;
+import customer.*;
+import player.Player;
 import player.RandomWordMatch;
 import player.WordManager;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.*;
 
 public class gameStart {
+    //public static RecipeClass recipeClass = new recipeClass();
+    static HashMap<String, RecipeClass> map = new HashMap<String, RecipeClass>();
+
     public static CustomerListManager customerListManager = new CustomerListManager();
-    private static CustomerGenerator customerGenerator;
+    private static CustomerGenerator customerGenerator = new CustomerGenerator();
     private static RandomWordMatch randomWordMatch;
-    private static RecipeCheck recipeCheck;
-    private static Customer customer;
+    private static RecipeCheck recipeCheck = new RecipeCheck(map);
+    private static Customer customer = customerGenerator.genetator();
+    //private static Player player;
 
     public gameStart(){
         this.customerListManager = customerListManager;

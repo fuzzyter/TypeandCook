@@ -35,7 +35,7 @@ public class GameGUI extends JPanel {
     private int score = 0;
     private int remainingTime = 120; // 2분 제한 시간
     private List<String> currentWords = new ArrayList<>();
-    private int when = 0;
+    //private int when = 0;
 
     private final CustomerListManager customerListManager;
     private final CustomerGenerator customerGenerator;
@@ -77,6 +77,7 @@ public class GameGUI extends JPanel {
 
         this.customerListManager = customerListManager;
         this.customerGenerator = customerGenerator;
+
         //this.randomWordMatch = new RandomWordMatch(ingredients, words);
         //this.randomWordMatch = WordManager.getRandomWordMatch();
 
@@ -127,8 +128,7 @@ public class GameGUI extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String inputText = inputField.getText().trim();
 
-                    // 입력 필드가 비어 있는 경우에만 비교 실행
-                    if (inputText.isEmpty()) {
+                    if (inputText.isEmpty()) { // 입력 필드가 비어 있는 경우에만 비교 실행
                         // 사용자가 입력한 재료를 콤마(,)로 분리하여 Set으로 변환
                         Set<String> userIngredients = Set.of(inputText.split("\\s*,\\s*"));
 
@@ -150,6 +150,21 @@ public class GameGUI extends JPanel {
                         // 입력창 초기화
                         inputField.setText("");
                     }
+                    else{ //텍스트인풋창이 채워져있는데 엔터칠경우 텍스트를 비교 시작
+                        String input = inputField.getText();
+                        inputField.setText("");
+
+                        // 입력값 확인 로직 추가 가능
+                        System.out.println("Typed: " + input);
+
+                        isWordMatch(input);
+                    }
+
+                    //일단 gameGUI에서 따로 배열이든 리스트든 ㅁ만들어서, 선택된 word랑 매칭되는 재료리스트를 거기에 담음
+                    //그리고 그 리스트를 recipeCheck에 보내서, null이면 아무것도 안만들어진거고 요리이름 반환받으면 ... 해당요리를
+                    //요구하는 손님이 있는지 for문돌려서..??? 손님123을 하나하나 검사하고
+                    //손님...있으면... 그 손님 완료처리 없으면... 실패랑똑같이 -30처리...
+
                 }
             }
         });
@@ -167,7 +182,7 @@ public class GameGUI extends JPanel {
         // 손님 표시 라벨 초기화
         for (int i = 0; i < 3; i++) {
             customerImageLabels[i] = new JLabel();
-            customerImageLabels[i].setBounds(100 + (i * 400), 200, 100, 100);
+            customerImageLabels[i].setBounds(100 + (i * 400), 0, 250, 400);
             add(customerImageLabels[i]);
 
             timeBars[i] = new JProgressBar(0, 100);
@@ -188,10 +203,23 @@ public class GameGUI extends JPanel {
 
             timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
 
-            if (remainingTime <= 0) {
+            if (remainingTime <= 0) { //시간이 끝나면 게임 종료
                 ((Timer) e.getSource()).stop();
                 endGame();
             }
+
+            if (remainingTime % 4 == 0) { // 4초마다 손님 추가
+                if (customerListManager.getCustomerSize() < 3) {
+                    customerListManager.addCustomer(customerGenerator.genetator());
+                    System.out.println("손님 생성: " + customerListManager.getCustomerSize() + "명");
+                    updateCustomers(customerListManager.getCustomers());
+                }
+                System.out.println("현재 손님 수: " + customerListManager.getCustomerSize());
+                System.out.println("손님 정보: " + customerListManager.getCustomers());
+                System.out.println("손님 요구 레시피: " + customer.getRequestedRecipe());
+            }
+
+            /*
             if(customerListManager.getCustomerSize() < 3){
                 when = remainingTime -3;
 
@@ -200,7 +228,7 @@ public class GameGUI extends JPanel {
                 customerListManager.addCustomer(customerGenerator.genetator());
                 updateCustomers(customerListManager.getCustomers()); // 고객 목록 갱신
                 when = 0;
-            }
+            }*/
 
         });
         timer.start();
@@ -226,7 +254,7 @@ public class GameGUI extends JPanel {
             System.out.println("Random words are being displayed...");
             for (Map.Entry<String, String> entry : randomWordMatch.getPairs()) {
                 if (index < wordLabels.length) {
-                    wordLabels[index].setText(entry.getKey() + " - " + entry.getValue());
+                    wordLabels[index].setText(entry.getKey()/* + " - " + entry.getValue()*/);
                     index++;
                 }}
         } catch (Exception e) {
@@ -235,11 +263,12 @@ public class GameGUI extends JPanel {
         }
     }
 
-
+    //점수 출력
     private void updateScoreDisplay() {
         scoreLabel.setText("Score: " + score);
     }
 
+    //손님 이미지
     public void updateCustomers(List<Customer> customers) {
         Random random = new Random();
 
@@ -251,11 +280,27 @@ public class GameGUI extends JPanel {
                 customerImageLabels[i].setIcon(new ImageIcon("src/assets/customer" + customerImageIndex + ".png"));
                 customerImageLabels[i].setVisible(true); // 손님 이미지 라벨을 화면에 보이도록 설정
 
+                timeBars[i].setValue(100);
                 timeBars[i].setVisible(true); // 손님마다 타이머도 표시
             } else {
                 customerImageLabels[i].setVisible(false); // 손님이 없다면 해당 라벨을 숨김
                 timeBars[i].setVisible(false); // 타이머도 숨김
             }
+
+            //랜덤으로 이미지 계속 바뀌는 거 수정하기
+        }
+    }
+
+    //입력한 단어와 화면에 표시되어 있는 단어 중 일치하는 것이 있는지 검사하고, 있다면 해당 재료를 리스트에 저장
+    public void isWordMatch(String input) {
+        for (int i = 0; i < 9; i++) {
+            if(wordLabels[i].getText().equals(input)){
+                System.out.println("단어 일치: " + input);
+                wordLabels[i].setText("<html><font color='red'>" + wordLabels[i].getText() + "</font></html>");
+                //Player.onkeydown
+                return;
+            }
+            System.out.println("일치하는 단어가 없습니다: " + input);
         }
     }
 

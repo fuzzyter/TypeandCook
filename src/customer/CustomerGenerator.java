@@ -10,6 +10,10 @@ public class CustomerGenerator {
 
     CustomerListManager customerListManager = new CustomerListManager();
 
+    public CustomerGenerator() {
+        // 기본 생성자 (필요에 따라 초기화 로직 추가)
+    }
+
     public Customer genetator(){
         Customer customer = new Customer(getRandomRecipe());
         return customer;

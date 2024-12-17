@@ -9,6 +9,7 @@ public class Customer {
     private static final List<Customer> customers = new ArrayList<>();
     private static final Random random = new Random();
 
+
     private final RecipeClass requestedRecipe; // 손님이 요청한 레시피
 
     public Customer(RecipeClass requestedRecipe) {
@@ -18,5 +19,4 @@ public class Customer {
     public RecipeClass getRequestedRecipe() {
         return requestedRecipe;
     }
-
 }
