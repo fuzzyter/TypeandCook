@@ -23,6 +23,8 @@ import java.util.HashSet;
 public class GameGUI extends JPanel {
 
     private ImageIcon BGImage;
+    private ImageIcon recipeImage;
+    private boolean isTabPressed = false;  // Tab 키가 눌렸는지 확인하는 변수
 
     private final JLabel scoreLabel = new JLabel("Score: 0");
     private final JLabel timerLabel = new JLabel("Time: 02:00");
@@ -84,21 +86,26 @@ public class GameGUI extends JPanel {
 
     }
 
+
+
     private void initComponents() {
         BGImage = new ImageIcon("src/assets/background.png"); //배경 이미지 출력
+        recipeImage = new ImageIcon("src/assets/recipe.png");
 
         JPanel background = new JPanel() {
             public void paintComponent(Graphics g) {
                 g.drawImage(BGImage.getImage(), 0, 0, this);
                 setOpaque(false); //그림을 표시하게 설정,투명하게 조절
                 super.paintComponent(g);
+
             }
+
+
         };
         background.setBounds(0, 0, 1280, 720); // 배경 크기 설정
         background.setOpaque(true); // 배경을 불투명하게 설정 (이미지 표시 위해)
 
         setLayout(null); // 배치 관리자 제거
-
 
         // 점수 표시
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 35));
@@ -111,10 +118,35 @@ public class GameGUI extends JPanel {
         timerLabel.setForeground(Color.BLACK);
         timerLabel.setBounds(590, 10, 200, 30);
         add(timerLabel);
+/*
+// Tab 키 눌렀을 때 동작
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("TAB"), "tabPressed");
+        getActionMap().put("tabPressed", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isTabPressed = true; // Tab 키가 눌리면 true 설정
+                repaint();
+            }
+        });
+
+// Tab 키 뗐을 때 동작
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released TAB"), "tabReleased");
+        getActionMap().put("tabReleased", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                isTabPressed = false; // Tab 키를 떼면 false 설정
+                repaint();
+            }
+        });*/
+
+        this.setFocusable(true); // GameGUI 패널에 포커스 설정
+        this.requestFocusInWindow(); // 키 입력 감지를 위해 포커스 요청
+
 
         // 입력 필드
         inputField.setBounds(480, 650, 300, 40);
         //inputField.addActionListener(this);
+        inputField.setFocusTraversalKeysEnabled(false);
         inputField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -143,6 +175,8 @@ public class GameGUI extends JPanel {
                         if(result == 1){
                             score += 100;
                             System.out.println("불고기버거 조리 완료. 점수가 +100 되었습니다. 현재 점수: " + score);
+                            add(orderLabels[1]);
+                            orderLabels[1].setBounds(500, 350, 150, 150);
                         }
                         else if(result == 2){
                             score += 100;
@@ -178,14 +212,33 @@ public class GameGUI extends JPanel {
                         isWordMatch(input);
                     }
 
+
+
                     //일단 gameGUI에서 따로 배열이든 리스트든 ㅁ만들어서, 선택된 word랑 매칭되는 재료리스트를 거기에 담음(onkeydown이 수행)
                     //그리고 그 리스트를 recipeCheck에 보내서(onkeydown2호출해서 수행), null이면 아무것도 안만들어진거고 요리이름 반환받으면 ... 해당요리를
                     //요구하는 손님이 있는지 for문돌려서..??? 손님123을 하나하나 검사하고
                     //손님...있으면... 그 손님 완료처리 없으면... 실패랑똑같이 -30처리...
 
                 }
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    isTabPressed = true;
+                    repaint();  // 화면을 다시 그리기
+                    e.consume();
+                    System.out.println("Tab 키가 눌렸습니다.");
+                }
             }
+            @Override
+            public void keyReleased(KeyEvent e) {
+                // Tab 키를 떼었을 때
+                if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    isTabPressed = false;
+                    repaint();  // 화면을 다시 그리기
+                    e.consume();
+                }
+            }
+
         });
+        this.setFocusable(true);
         add(inputField);
 
         // 단어 출력 라벨 초기화
@@ -229,6 +282,18 @@ public class GameGUI extends JPanel {
 
         add(background); // background를 다른 컴포넌트들보다 뒤에 추가
     }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // Tab 키가 눌렸으면 이미지를 화면에 그리기
+        if (isTabPressed) {
+            Image recipeImageObj = recipeImage.getImage();
+            g.drawImage(recipeImageObj, 0, 0, this);  // 이미지 위치 (100, 100)
+        }
+    }
+
+
 
     //타이머, 손님이 없을 경우 4초 뒤에 손님 추가
     private void startTimer() {
@@ -317,6 +382,8 @@ public class GameGUI extends JPanel {
                 int customerImageIndex = random.nextInt(6) + 1; // 1부터 6까지의 숫자
                 customerImageLabels[i].setIcon(new ImageIcon("src/assets/customer" + customerImageIndex + ".png"));
                 customerImageLabels[i].setVisible(true); // 손님 이미지 라벨을 화면에 보이도록 설정
+                orderLabels[i].setIcon(new ImageIcon("src/assets/order" + (i+1) + ".png"));
+                orderLabels[i].setVisible(true);/*
                 if(customer.getRequestedRecipe().getName().equals("불고기버거")){
                     orderLabels[i].setIcon(new ImageIcon("src/assets/order1.png"));
                     orderLabels[i].setVisible(true);
@@ -328,7 +395,7 @@ public class GameGUI extends JPanel {
                 else{
                     orderLabels[i].setIcon(new ImageIcon("src/assets/order3.png"));
                     orderLabels[i].setVisible(true);
-                }
+                }*/
                 timeBars[i].setValue(100);
                 timeBars[i].setVisible(true); // 손님마다 타이머도 표시
 

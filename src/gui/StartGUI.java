@@ -115,7 +115,7 @@ public class StartGUI extends JFrame {
         helpImageLabel.setIcon(helpImage);
 
         // Help 이미지를 화면에 표시
-        //helpImageLabel.setBounds(0, 0, getWidth(), getHeight());  // 화면 크기 전체에 표시
+        helpImageLabel.setBounds(0, 0, getWidth(), getHeight());  // 화면 크기 전체에 표시
         add(helpImageLabel);
 
         // 이미지를 닫는 동작을 위해 저장
