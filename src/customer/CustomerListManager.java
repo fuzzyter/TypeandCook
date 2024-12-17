@@ -23,6 +23,10 @@ public class CustomerListManager {
     public int getCustomerSize(){
         return customers.size();
     }
+
+    public List<Customer> getCustomers() {
+        return customers; // 현재 고객 목록을 반환합니다.
+    }
 /*
     public static boolean verifyInput(String input) {
         for (Customer customer : customers) {

@@ -29,7 +29,6 @@ public class GameGUI extends JPanel {
     private final JLabel timerLabel = new JLabel("Time: 02:00");
     private final JTextField inputField = new JTextField();
     private final JLabel[] wordLabels = new JLabel[9]; //단어 출력 라벨
-    private final JLabel[] customerLabels = new JLabel[3];
     private final JLabel[] orderLabels = new JLabel[3];
     private final JProgressBar[] timeBars = new JProgressBar[3];
     private final JLabel[] customerImageLabels = new JLabel[3]; //손님 이미지 출력
@@ -103,22 +102,22 @@ public class GameGUI extends JPanel {
         background.setOpaque(true); // 배경을 불투명하게 설정 (이미지 표시 위해)
 
         setLayout(null); // 배치 관리자 제거
-        add(background, Integer.valueOf(0)); // background를 다른 컴포넌트들보다 뒤에 추가
+
 
         // 점수 표시
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 35));
         scoreLabel.setForeground(Color.WHITE);
-        scoreLabel.setBounds(20, 20, 200, 30);
+        scoreLabel.setBounds(20, 640, 200, 30);
         add(scoreLabel);
 
         // 타이머 표시
-        timerLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        timerLabel.setForeground(Color.WHITE);
-        timerLabel.setBounds(1080, 20, 200, 30);
+        timerLabel.setFont(new Font("Arial", Font.BOLD, 40));
+        timerLabel.setForeground(Color.BLACK);
+        timerLabel.setBounds(590, 10, 200, 30);
         add(timerLabel);
 
         // 입력 필드
-        inputField.setBounds(50, 650, 500, 30);
+        inputField.setBounds(480, 650, 300, 40);
         //inputField.addActionListener(this);
         inputField.addKeyListener(new KeyAdapter() {
             @Override
@@ -166,18 +165,18 @@ public class GameGUI extends JPanel {
         }
 
         // 손님 표시 라벨 초기화
-        for (int i = 0; i < 3; i++) {/*
-            customerLabels[i] = new JLabel("손님 " + (i + 1));
-            customerLabels[i].setFont(new Font("Arial", Font.BOLD, 18));
-            customerLabels[i].setForeground(Color.WHITE);
-            customerLabels[i].setBounds(100 + (i * 400), 200, 100, 100);
-            add(customerLabels[i]);*/
+        for (int i = 0; i < 3; i++) {
+            customerImageLabels[i] = new JLabel();
+            customerImageLabels[i].setBounds(100 + (i * 400), 200, 100, 100);
+            add(customerImageLabels[i]);
 
             timeBars[i] = new JProgressBar(0, 100);
             timeBars[i].setBounds(100 + (i * 400), 310, 100, 20);
             timeBars[i].setValue(100);
             add(timeBars[i]);
         }
+
+        add(background); // background를 다른 컴포넌트들보다 뒤에 추가
     }
 
     //타이머, 손님이 없을 경우 4초 뒤에 손님 추가
@@ -187,7 +186,7 @@ public class GameGUI extends JPanel {
             int minutes = remainingTime / 60;
             int seconds = remainingTime % 60;
 
-            timerLabel.setText(String.format("Time: %02d:%02d", minutes, seconds));
+            timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
 
             if (remainingTime <= 0) {
                 ((Timer) e.getSource()).stop();
@@ -199,6 +198,7 @@ public class GameGUI extends JPanel {
             }
             if(remainingTime == when){
                 customerListManager.addCustomer(customerGenerator.genetator());
+                updateCustomers(customerListManager.getCustomers()); // 고객 목록 갱신
                 when = 0;
             }
 
@@ -224,7 +224,6 @@ public class GameGUI extends JPanel {
             randomWordMatch.getPairs(); // Shuffle the words
             int index = 0;
             System.out.println("Random words are being displayed...");
-            // 예를 들어, randomWordMatch.getPairs()가 사용된다면 그 전에 예외가 발생할 수 있음
             for (Map.Entry<String, String> entry : randomWordMatch.getPairs()) {
                 if (index < wordLabels.length) {
                     wordLabels[index].setText(entry.getKey() + " - " + entry.getValue());
@@ -243,20 +242,23 @@ public class GameGUI extends JPanel {
 
     public void updateCustomers(List<Customer> customers) {
         Random random = new Random();
-        for (int i = 0; i < customerLabels.length; i++) {
+
+        // 각 손님에 대해 이미지를 설정
+        for (int i = 0; i < customerImageLabels.length; i++) {
             if (i < customers.size()) {
+                // 랜덤 손님 이미지 설정 (예시: customer1.png ~ customer6.png)
+                int customerImageIndex = random.nextInt(6) + 1; // 1부터 6까지의 숫자
+                customerImageLabels[i].setIcon(new ImageIcon("src/assets/customer" + customerImageIndex + ".png"));
+                customerImageLabels[i].setVisible(true); // 손님 이미지 라벨을 화면에 보이도록 설정
 
-                // 랜덤 손님 이미지 설정
-                int customerImageIndex = random.nextInt(6) + 1; // customer1.png ~ customer6.png
-                customerImageLabels[i].setIcon(new ImageIcon("customer" + customerImageIndex + ".png"));
-                customerImageLabels[i].setVisible(true);
-
-                timeBars[i].setVisible(true);
+                timeBars[i].setVisible(true); // 손님마다 타이머도 표시
             } else {
-                timeBars[i].setVisible(false);
+                customerImageLabels[i].setVisible(false); // 손님이 없다면 해당 라벨을 숨김
+                timeBars[i].setVisible(false); // 타이머도 숨김
             }
         }
     }
+
 
     private void endGame() {
         JOptionPane.showMessageDialog(parentFrame, "게임 종료! 점수: " + score);
