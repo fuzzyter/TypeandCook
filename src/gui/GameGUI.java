@@ -91,6 +91,9 @@ public class GameGUI extends JPanel {
     private void initComponents() {
         BGImage = new ImageIcon("src/assets/background.png"); //배경 이미지 출력
         recipeImage = new ImageIcon("src/assets/recipe.png");
+        CustomGlassPane glassPane = new CustomGlassPane("src/assets/Recipe.png");
+        parentFrame.setGlassPane(glassPane);
+        glassPane.setVisible(false); // 초기에는 숨김
 
         JPanel background = new JPanel() {
             public void paintComponent(Graphics g) {
@@ -150,7 +153,6 @@ public class GameGUI extends JPanel {
         inputField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                // Enter 키가 눌렸을 때
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String inputText = inputField.getText().trim();
 
@@ -175,8 +177,8 @@ public class GameGUI extends JPanel {
                         if(result == 1){
                             score += 100;
                             System.out.println("불고기버거 조리 완료. 점수가 +100 되었습니다. 현재 점수: " + score);
-                            add(orderLabels[1]);
-                            orderLabels[1].setBounds(500, 350, 150, 150);
+                            /*add(orderLabels[1]);
+                            orderLabels[1].setBounds(500, 350, 150, 150);*/
                         }
                         else if(result == 2){
                             score += 100;
@@ -220,22 +222,29 @@ public class GameGUI extends JPanel {
                     //손님...있으면... 그 손님 완료처리 없으면... 실패랑똑같이 -30처리...
 
                 }
-                if (e.getKeyCode() == KeyEvent.VK_TAB) {
-                    isTabPressed = true;
-                    repaint();  // 화면을 다시 그리기
-                    e.consume();
-                    System.out.println("Tab 키가 눌렸습니다.");
-                }
             }
+        });
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
             @Override
-            public void keyReleased(KeyEvent e) {
-                // Tab 키를 떼었을 때
-                if (e.getKeyCode() == KeyEvent.VK_TAB) {
-                    isTabPressed = false;
-                    repaint();  // 화면을 다시 그리기
-                    e.consume();
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_TAB) {
+                    /*isTabPressed = true;
+                    repaint();*/
+                    glassPane.setShowImage(true); // 이미지 보이기
+                    glassPane.setVisible(true);
+                    return true; // Tab 키 이벤트 소비
                 }
+                if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyCode() == KeyEvent.VK_TAB) {
+                    /*isTabPressed = false;
+                    repaint();*/
+                    glassPane.setShowImage(false); // 이미지 숨기기
+                    glassPane.setVisible(false);
+                    return true; // Tab 키 이벤트 소비
+                }
+                return false;
             }
+
 
         });
         this.setFocusable(true);
@@ -281,17 +290,30 @@ public class GameGUI extends JPanel {
 
 
         add(background); // background를 다른 컴포넌트들보다 뒤에 추가
-    }
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
 
-        // Tab 키가 눌렸으면 이미지를 화면에 그리기
-        if (isTabPressed) {
-            Image recipeImageObj = recipeImage.getImage();
-            g.drawImage(recipeImageObj, 0, 0, this);  // 이미지 위치 (100, 100)
+    }
+    class CustomGlassPane extends JComponent {
+        private boolean showImage = false;
+        private Image image;
+
+        public CustomGlassPane(String imagePath) {
+            this.image = new ImageIcon("src/assets/Recipe.png").getImage();
+        }
+
+        public void setShowImage(boolean showImage) {
+            this.showImage = showImage;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (showImage) {
+                g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+            }
         }
     }
+
 
 
 
