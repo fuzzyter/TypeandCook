@@ -18,6 +18,7 @@ public class CustomerListManager {
 
     public void removeCustomer(Customer customer){
         //손님 제거 코드
+        customers.remove(customer);
     }
 
     public int getCustomerSize(){

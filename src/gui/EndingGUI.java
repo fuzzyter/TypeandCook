@@ -8,6 +8,7 @@ import customer.CustomerListManager;
 import customer.RecipeCheck;
 import gui.StartGUI;
 import gui.GameGUI;
+import player.Player;
 import player.RandomWordMatch;
 import customer.Customer;
 import customer.CustomerGenerator;
@@ -21,6 +22,7 @@ public class EndingGUI extends JPanel {
     private static RandomWordMatch randomWordMatch;
     private static RecipeCheck recipeCheck;
     private static Customer customer;
+    private static Player player;
 
     public EndingGUI(JFrame parentFrame) {
         setLayout(new BorderLayout());
@@ -35,7 +37,7 @@ public class EndingGUI extends JPanel {
         backToMenuButton.setFont(new Font("Arial", Font.BOLD, 20));
         backToMenuButton.addActionListener(e -> {
             parentFrame.getContentPane().removeAll(); // 현재 내용 제거
-            parentFrame.setContentPane(new StartGUI(customerListManager, customerGenerator, recipeCheck, customer).getContentPane()); // 메인 메뉴로 이동
+            parentFrame.setContentPane(new StartGUI(customerListManager, customerGenerator, recipeCheck, customer, player).getContentPane()); // 메인 메뉴로 이동
             parentFrame.revalidate();
             parentFrame.repaint();
         });

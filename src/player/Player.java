@@ -10,7 +10,7 @@ public class Player {
     private final RecipeCheck recipeMatcher;
     private final Set<String> ingredients;
 
-    Player(RandomWordMatch wordMatcher, RecipeCheck recipeMatcher) {
+    public Player(RandomWordMatch wordMatcher, RecipeCheck recipeMatcher) {
         this.wordMatcher = wordMatcher;
         this.recipeMatcher = recipeMatcher;
         this.ingredients = new HashSet<>();
@@ -21,6 +21,9 @@ public class Player {
         String ingredient = this.wordMatcher.getIngredientByWord(value);
         if (ingredient != null) {
             this.ingredients.add(ingredient);
+            System.out.println("현재 재료들: " + this.ingredients); // 현재 재료를 출력
+        } else {
+            System.out.println("재료가 일치하지 않습니다." + value);
         }
     }
 
@@ -34,5 +37,9 @@ public class Player {
 
     public Set<String> getIngredients() {
         return this.ingredients;
+    }
+
+    public RandomWordMatch getRandomWordMatch() {
+        return wordMatcher;
     }
 }

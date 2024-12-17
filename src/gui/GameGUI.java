@@ -6,7 +6,6 @@ import customer.CustomerListManager;
 import customer.RecipeCheck;
 import player.Player;
 import player.RandomWordMatch;
-import player.WordManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,18 +41,12 @@ public class GameGUI extends JPanel {
     private final RandomWordMatch randomWordMatch;
     private final RecipeCheck recipeCheck;
     private final Customer customer;
+    private final Player player;
 
 
     private final JFrame parentFrame;
 
-
-    private static final List<String> ingredients = List.of("빵", "양상추", "토마토", "양념소스", "치킨", "치즈", "패티", "새우", "머스타드");
-    private static final List<String> words = List.of("particular","investigate","magnify","conclusive","conversely","assure",
-            "entire","deliberate","conjunction","sleek","afford","justified","subdue","extant","invoke");
-
-
-
-    public GameGUI(JFrame parentFrame, CustomerListManager customerListManager, CustomerGenerator customerGenerator, RecipeCheck recipeCheck, Customer customer) {
+    public GameGUI(JFrame parentFrame, CustomerListManager customerListManager, CustomerGenerator customerGenerator, RecipeCheck recipeCheck, Customer customer, Player player) {
         System.out.println("GameGUI constructor start");
 
         this.parentFrame = parentFrame;
@@ -69,7 +62,7 @@ public class GameGUI extends JPanel {
             System.out.println("randomWordMatch initialized!");
         }*/
 
-        this.randomWordMatch = WordManager.getRandomWordMatch();
+        this.randomWordMatch = player.getRandomWordMatch();
 
         displayRandomWords(); // 초기 단어 출력
 
@@ -82,10 +75,12 @@ public class GameGUI extends JPanel {
         //this.randomWordMatch = WordManager.getRandomWordMatch();
 
 
-        System.out.println(ingredients);
+        //System.out.println(ingredients);
         this.recipeCheck = recipeCheck;
         this.customer = customer;
+        this.player = player;
 
+        randomWordMatch.shuffle();
 
     }
 
@@ -123,7 +118,6 @@ public class GameGUI extends JPanel {
         inputField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                //RecipeCheck recipeCheck = new RecipeCheck();
                 // Enter 키가 눌렸을 때
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     String inputText = inputField.getText().trim();
@@ -144,11 +138,17 @@ public class GameGUI extends JPanel {
                             System.out.println("조리 실패. 점수가 -30 되었습니다. 현재 점수: " + score);
                         }
 
+
                         // 점수 디스플레이 업데이트
                         updateScoreDisplay();
 
                         // 입력창 초기화
                         inputField.setText("");
+
+                        for (int i = 0; i < 9; i++) {
+                            wordLabels[i].setForeground(Color.WHITE);
+                        }
+
                     }
                     else{ //텍스트인풋창이 채워져있는데 엔터칠경우 텍스트를 비교 시작
                         String input = inputField.getText();
@@ -160,8 +160,8 @@ public class GameGUI extends JPanel {
                         isWordMatch(input);
                     }
 
-                    //일단 gameGUI에서 따로 배열이든 리스트든 ㅁ만들어서, 선택된 word랑 매칭되는 재료리스트를 거기에 담음
-                    //그리고 그 리스트를 recipeCheck에 보내서, null이면 아무것도 안만들어진거고 요리이름 반환받으면 ... 해당요리를
+                    //일단 gameGUI에서 따로 배열이든 리스트든 ㅁ만들어서, 선택된 word랑 매칭되는 재료리스트를 거기에 담음(onkeydown이 수행)
+                    //그리고 그 리스트를 recipeCheck에 보내서(onkeydown2호출해서 수행), null이면 아무것도 안만들어진거고 요리이름 반환받으면 ... 해당요리를
                     //요구하는 손님이 있는지 for문돌려서..??? 손님123을 하나하나 검사하고
                     //손님...있으면... 그 손님 완료처리 없으면... 실패랑똑같이 -30처리...
 
@@ -175,8 +175,24 @@ public class GameGUI extends JPanel {
             wordLabels[i] = new JLabel();
             wordLabels[i].setFont(new Font("Arial", Font.BOLD, 18));
             wordLabels[i].setForeground(Color.WHITE);
-            wordLabels[i].setBounds(50 + (i * 120), 400, 100, 30);
+            wordLabels[i].setOpaque(true);
+            //wordLabels[i].setBackground(new Color(0, 0, 0, 70)); //검은색, 투명도 70의 배경
+            wordLabels[i].setBackground(Color.BLACK);
+            if(i<4){
+                wordLabels[i].setBounds(200 + (i * 260), 400, 120, 30);
+            }
+            else{
+                wordLabels[i].setBounds(130 + ((i-4) * 240), 530, 120, 30);
+            }
+            //wordLabels[i].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
             add(wordLabels[i]);
+        }
+
+        for(int i = 0 ; i < 3 ; i ++){
+            orderLabels[i] = new JLabel();
+            orderLabels[i].setBounds(20 + (i * 400), 230, 150, 150);
+            add(orderLabels[i]);
         }
 
         // 손님 표시 라벨 초기화
@@ -190,6 +206,8 @@ public class GameGUI extends JPanel {
             timeBars[i].setValue(100);
             add(timeBars[i]);
         }
+
+
 
         add(background); // background를 다른 컴포넌트들보다 뒤에 추가
     }
@@ -245,16 +263,18 @@ public class GameGUI extends JPanel {
                 index++;
             }
         }*/
+
         if (this.randomWordMatch == null) {
             System.out.println("randomWordMatch is null! Cannot display words.");
         }
         try {
+            List<String> words = randomWordMatch.getWords();
             randomWordMatch.getPairs(); // Shuffle the words
             int index = 0;
             System.out.println("Random words are being displayed...");
             for (Map.Entry<String, String> entry : randomWordMatch.getPairs()) {
                 if (index < wordLabels.length) {
-                    wordLabels[index].setText(entry.getKey()/* + " - " + entry.getValue()*/);
+                    wordLabels[index].setText(words.get(index)/*entry.getKey() + " - " + entry.getValue()*/);
                     index++;
                 }}
         } catch (Exception e) {
@@ -279,12 +299,26 @@ public class GameGUI extends JPanel {
                 int customerImageIndex = random.nextInt(6) + 1; // 1부터 6까지의 숫자
                 customerImageLabels[i].setIcon(new ImageIcon("src/assets/customer" + customerImageIndex + ".png"));
                 customerImageLabels[i].setVisible(true); // 손님 이미지 라벨을 화면에 보이도록 설정
-
+                if(customer.getRequestedRecipe().getName().equals("불고기버거")){
+                    orderLabels[i].setIcon(new ImageIcon("src/assets/order1.png"));
+                    orderLabels[i].setVisible(true);
+                }
+                else if (customer.getRequestedRecipe().getName().equals("치킨버거")) {
+                    orderLabels[i].setIcon(new ImageIcon("src/assets/order2.png"));
+                    orderLabels[i].setVisible(true);
+                }
+                else{
+                    orderLabels[i].setIcon(new ImageIcon("src/assets/order3.png"));
+                    orderLabels[i].setVisible(true);
+                }
                 timeBars[i].setValue(100);
                 timeBars[i].setVisible(true); // 손님마다 타이머도 표시
+
+
             } else {
                 customerImageLabels[i].setVisible(false); // 손님이 없다면 해당 라벨을 숨김
                 timeBars[i].setVisible(false); // 타이머도 숨김
+                orderLabels[i].setVisible(false);
             }
 
             //랜덤으로 이미지 계속 바뀌는 거 수정하기
@@ -296,8 +330,9 @@ public class GameGUI extends JPanel {
         for (int i = 0; i < 9; i++) {
             if(wordLabels[i].getText().equals(input)){
                 System.out.println("단어 일치: " + input);
-                wordLabels[i].setText("<html><font color='red'>" + wordLabels[i].getText() + "</font></html>");
-                //Player.onkeydown
+                player.onKeyDown(wordLabels[i].getText());
+                wordLabels[i].setForeground(Color.RED);
+
                 return;
             }
             System.out.println("일치하는 단어가 없습니다: " + input);
@@ -308,6 +343,6 @@ public class GameGUI extends JPanel {
     private void endGame() {
         JOptionPane.showMessageDialog(parentFrame, "게임 종료! 점수: " + score);
         parentFrame.dispose();
-        new StartGUI(customerListManager, customerGenerator, recipeCheck, customer); // 메인 메뉴로 복귀
+        new StartGUI(customerListManager, customerGenerator, recipeCheck, customer, player); // 메인 메뉴로 복귀
     }
 }
