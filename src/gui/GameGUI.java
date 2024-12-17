@@ -234,7 +234,11 @@ public class GameGUI extends JPanel {
                     glassPane.setShowImage(true); // 이미지 보이기
                     glassPane.setVisible(true);
                     return true; // Tab 키 이벤트 소비
-                }
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { // ESC 키 처리
+                returnToStartGUI(); // StartGUI 화면으로 전환
+                return true;
+                 }
+
                 if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyCode() == KeyEvent.VK_TAB) {
                     /*isTabPressed = false;
                     repaint();*/
@@ -242,6 +246,7 @@ public class GameGUI extends JPanel {
                     glassPane.setVisible(false);
                     return true; // Tab 키 이벤트 소비
                 }
+
                 return false;
             }
 
@@ -446,6 +451,13 @@ public class GameGUI extends JPanel {
         }
     }
 
+    private void returnToStartGUI() {
+        // 현재 JFrame 닫기
+        parentFrame.dispose();
+
+        // StartGUI 인스턴스 생성 및 실행
+        new StartGUI(customerListManager, customerGenerator, recipeCheck, customer, player);
+    }
 
     private void endGame() {
         JOptionPane.showMessageDialog(parentFrame, "게임 종료! 점수: " + score);
