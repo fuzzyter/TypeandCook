@@ -17,6 +17,7 @@ public class RecipeCheck {
             if (recipeIngredients.getIngredients().size() == ingredients.size() && ingredients.containsAll(recipeIngredients.getIngredients())) {
                 return pair.getKey();
             }
+            System.out.println("Recipe 재료: " + recipeIngredients.getIngredients());
         }
         return null;
     }

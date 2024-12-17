@@ -124,6 +124,7 @@ public class GameGUI extends JPanel {
 
                     if (inputText.isEmpty()) { // 입력 필드가 비어 있는 경우에만 비교 실행
                         // 사용자가 입력한 재료를 콤마(,)로 분리하여 Set으로 변환
+                        /*
                         Set<String> userIngredients = Set.of(inputText.split("\\s*,\\s*"));
 
                         // 레시피와 비교
@@ -136,8 +137,25 @@ public class GameGUI extends JPanel {
                             // 레시피와 일치하지 않는 경우
                             score -= 30; // 오답
                             System.out.println("조리 실패. 점수가 -30 되었습니다. 현재 점수: " + score);
-                        }
+                        }*/
 
+                        int result = player.onKeyDown2();
+                        if(result == 1){
+                            score += 100;
+                            System.out.println("불고기버거 조리 완료. 점수가 +100 되었습니다. 현재 점수: " + score);
+                        }
+                        else if(result == 2){
+                            score += 100;
+                            System.out.println("치킨버거 조리 완료. 점수가 +100 되었습니다. 현재 점수: " + score);
+                        }
+                        else if(result == 3){
+                            score += 100;
+                            System.out.println("새우버거 조리 완료. 점수가 +100 되었습니다. 현재 점수: " + score);
+                        }
+                        else{
+                            score -= 30; // 오답
+                            System.out.println("조리 실패. 점수가 -30 되었습니다. 현재 점수: " + score);
+                        }
 
                         // 점수 디스플레이 업데이트
                         updateScoreDisplay();
