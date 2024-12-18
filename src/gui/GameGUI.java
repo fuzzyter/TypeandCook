@@ -56,14 +56,6 @@ public class GameGUI extends JPanel {
         initComponents();
         startTimer(); // 제한 시간 타이머 시작
 
-/*
-        System.out.println("Before displayRandomWords");
-        if (randomWordMatch == null) {
-            System.out.println("randomWordMatch is null!");
-        } else {
-            System.out.println("randomWordMatch initialized!");
-        }*/
-
         this.randomWordMatch = player.getRandomWordMatch();
 
         displayRandomWords(); // 초기 단어 출력
@@ -213,14 +205,6 @@ public class GameGUI extends JPanel {
 
                         isWordMatch(input);
                     }
-
-
-
-                    //일단 gameGUI에서 따로 배열이든 리스트든 ㅁ만들어서, 선택된 word랑 매칭되는 재료리스트를 거기에 담음(onkeydown이 수행)
-                    //그리고 그 리스트를 recipeCheck에 보내서(onkeydown2호출해서 수행), null이면 아무것도 안만들어진거고 요리이름 반환받으면 ... 해당요리를
-                    //요구하는 손님이 있는지 for문돌려서..??? 손님123을 하나하나 검사하고
-                    //손님...있으면... 그 손님 완료처리 없으면... 실패랑똑같이 -30처리...
-
                 }
             }
         });
