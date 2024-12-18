@@ -59,6 +59,7 @@ public class Player {
             return 3;
         }else {
             System.out.println("일치하는 레시피가 없습니다. 재료를 다시 확인해 주세요.");
+            this.ingredients.clear();
             return 0;
         }
     }
